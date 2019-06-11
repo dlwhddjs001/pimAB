@@ -66,12 +66,26 @@ public class MemberDAO {
 		return ret;
 	}
 	
+	//수정
 	public int update(Member member) {
-		int ret = -1; // 0 이상이면 해당 아이디가 존재하므로 수정, -1이하이면 수정 실패		
-		
-		
+		int ret = -1; // 0이상이면 해당 아이디가 존재하므로 수정, -1이하이면 수정 실패
+		try {
+			int index = searchByID(member);
+			if(index > 0) { // -1이면 검색 실패, 삭제 불가능, 0이상이어야 삭제가 가능
+				fw = new MemberFileWriter(file); 
+				memberList.set(index, member);
+			// memberListd의 ㅙ당 인덱스의 새로운 요소가 설정
+				fw.saveMember(memberList);
+				ret = 0;
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 		return ret;
-	}	
+	}
+	
+			
 	public int delete(Member member) {		
 		int ret = -1; // 0 이상이면 해당 아이디가 존재하므로 삭제, -1이하이면 삭제 실패
 		try {
@@ -89,6 +103,7 @@ public class MemberDAO {
 		}
 		return ret;
 	}
+	
 	public void printMemberList() {
 		for(Member m : memberList)
 			System.out.println(m.getUname() + ":" + m.getUid());
